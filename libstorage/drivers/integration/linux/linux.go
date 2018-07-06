@@ -182,6 +182,8 @@ func (d *driver) Mount(
 		"volumeID":   volumeID,
 		"opts":       opts}).Info("mounting volume")
 
+	ctx.WithFields(log.Fields{}).Info("abcdefg")
+
 	lsAtt := types.VolAttReqWithDevMapOnlyVolsAttachedToInstanceOrUnattachedVols
 	if opts.Preempt {
 		lsAtt = types.VolAttReqWithDevMapForInstance
