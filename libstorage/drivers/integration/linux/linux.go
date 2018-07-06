@@ -182,8 +182,6 @@ func (d *driver) Mount(
 		"volumeID":   volumeID,
 		"opts":       opts}).Info("mounting volume")
 
-	ctx.WithFields(log.Fields{}).Info("abcdefg")
-
 	lsAtt := types.VolAttReqWithDevMapOnlyVolsAttachedToInstanceOrUnattachedVols
 	if opts.Preempt {
 		lsAtt = types.VolAttReqWithDevMapForInstance
@@ -273,6 +271,9 @@ func (d *driver) Mount(
 		return "", nil, goof.New("no local attachment found")
 	}
 
+	ctx.WithFields(log.Fields{
+		"deviceName": ma.DeviceName,
+	}).Info("device name")
 	if ma.DeviceName == "" {
 		return "", nil, goof.New("no device name returned")
 	}
@@ -282,11 +283,15 @@ func (d *driver) Mount(
 		return "", nil, err
 	}
 
+	ctx.WithFields(log.Fields{}).Info("Before Mount")
+
 	mounts, err := client.OS().Mounts(
 		ctx, ma.DeviceName, "", opts.Opts)
 	if err != nil {
 		return "", nil, err
 	}
+
+	ctx.WithFields(log.Fields{}).Info("After Mount")
 
 	if len(mounts) > 0 {
 		if _, ok := ctx.Value(ctxExactMountKey).(interface{}); ok {

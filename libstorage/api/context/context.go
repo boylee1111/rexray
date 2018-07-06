@@ -7,8 +7,8 @@ import (
 	"os"
 	"strings"
 
-	log "github.com/sirupsen/logrus"
 	gcontext "github.com/gorilla/context"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/rexray/rexray/libstorage/api/types"
 )
@@ -146,7 +146,11 @@ func WithStorageService(
 
 	// set the service's LocalDevices if present
 	if ldm, ok := parent.Value(AllLocalDevicesKey).(types.LocalDevicesMap); ok {
+		fmt.Print("ldm = ")
+		fmt.Println(ldm)
 		if ld, ok := ldm[driverName]; ok {
+			fmt.Print("ld = ")
+			fmt.Println(ld)
 			parent = newContext(parent, LocalDevicesKey, ld, nil, nil)
 		}
 	}
@@ -378,7 +382,10 @@ func MustInstanceID(ctx context.Context) *types.InstanceID {
 // LocalDevices returns the context's local devices map. This value is valid
 // on both the client and the server.
 func LocalDevices(ctx context.Context) (*types.LocalDevices, bool) {
+	fmt.Println("Find local device")
 	v, ok := ctx.Value(LocalDevicesKey).(*types.LocalDevices)
+	fmt.Print(" v = ")
+	fmt.Println(v)
 	return v, ok
 }
 

@@ -291,12 +291,17 @@ func (d *driver) Volumes(
 		return vols, nil
 	}
 
+	ctx.WithFields(log.Fields{}).Info("Try to Type Volume")
+
 	// convert GCE disks to libstorage types.Volume
 	vols, err = d.toTypeVolume(ctx, gceDisks, opts.Attachments, zone)
 	if err != nil {
 		return nil, goof.WithError("error converting to types.Volume",
 			err)
 	}
+
+	fmt.Print("vols = ")
+	fmt.Println(vols)
 
 	return vols, nil
 }
@@ -816,7 +821,7 @@ func (d *driver) toTypeVolume(
 		}
 
 		if attachments.Requested() {
-			attachment := getAttachment(disk, attachments, ld)
+			attachment := getAttachment(ctx, disk, attachments, ld)
 			if attachment != nil {
 				volume.Attachments = attachment
 			}
@@ -850,11 +855,15 @@ func (d *driver) validZone(ctx types.Context) (*string, error) {
 }
 
 func getAttachment(
+	ctx types.Context,
 	disk *compute.Disk,
 	attachments types.VolumeAttachmentsTypes,
 	ld *types.LocalDevices) []*types.VolumeAttachment {
 
 	var volAttachments []*types.VolumeAttachment
+
+	fmt.Print("Device map = ")
+	fmt.Println(ld.DeviceMap)
 
 	for _, link := range disk.Users {
 		att := &types.VolumeAttachment{

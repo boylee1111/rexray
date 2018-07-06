@@ -11,6 +11,7 @@ import (
 	"github.com/rexray/rexray/libstorage/api/types"
 	"github.com/rexray/rexray/libstorage/drivers/storage/gcepd"
 	gceUtils "github.com/rexray/rexray/libstorage/drivers/storage/gcepd/utils"
+	"fmt"
 )
 
 const (
@@ -76,11 +77,17 @@ func (d *driver) LocalDevices(
 		return nil, err
 	}
 
+	fmt.Print("files = ")
+	fmt.Println(files)
+
 	persistentDiskRX, err := regexp.Compile(
 		diskPrefix + `(` + gceUtils.DiskNameRX + `)`)
 	if err != nil {
 		return nil, err
 	}
+
+	fmt.Print("pdrx = ")
+	fmt.Println(persistentDiskRX)
 
 	attachedDisks, err := gceUtils.GetDisks(ctx)
 	if err != nil {
